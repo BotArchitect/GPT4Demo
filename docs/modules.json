@@ -1,0 +1,53 @@
+[
+    {
+      "module": "ConfigManager",
+      "description": "Manages system-wide configurations, reading from and interpreting a configuration file.",
+      "dependencies": []
+    },
+    {
+      "module": "RateLimitManager",
+      "description": "Monitors and manages the API request rate to adhere to GitHub's rate limiting, utilizing the `X-RateLimit-Remaining` header.",
+      "dependencies": []
+    },
+    {
+      "module": "APIRequestHandler",
+      "description": "Handles construction, execution, and response parsing of HTTP requests to the GitHub API, while ensuring compliance with rate limits.",
+      "dependencies": ["RateLimitManager", "ConfigManager"]
+    },
+    {
+      "module": "DataValidator",
+      "description": "Validates the data extracted from API responses for integrity and completeness before it's sent to the database.",
+      "dependencies": []
+    },
+    {
+      "module": "DBConnector",
+      "description": "Manages database connections, providing an interface for executing SQL queries on the PostgreSQL database.",
+      "dependencies": ["ConfigManager"]
+    },
+    {
+      "module": "DataStorageManager",
+      "description": "Implements the logic for inserting new and updating existing PR records in the database, handling SQL transactions.",
+      "dependencies": ["DBConnector", "DataValidator"]
+    },
+    {
+      "module": "ErrorHandler",
+      "description": "Provides a centralized error handling mechanism for logging and managing exceptions across the system.",
+      "dependencies": ["Logger"]
+    },
+    {
+      "module": "Logger",
+      "description": "Implements logging functionality to record operational events, errors, and system metrics. Dependent on most modules for capturing logs throughout the system.",
+      "dependencies": ["ConfigManager"]
+    },
+    {
+      "module": "Crawler",
+      "description": "Coordinates the crawling process, orchestrating the flow from API requests to data storage, including rate limit and error handling.",
+      "dependencies": ["APIRequestHandler", "DataStorageManager", "ErrorHandler", "Logger"]
+    },
+    {
+      "module": "Main",
+      "description": "The entry point of the application, responsible for initializing components and triggering the crawling process.",
+      "dependencies": ["Crawler", "ConfigManager"]
+    }
+  ]
+  
